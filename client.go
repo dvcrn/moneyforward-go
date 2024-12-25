@@ -167,8 +167,8 @@ func (c *Client) GetTransactions() (*TransactionsResponse, error) {
 	return &resp, nil
 }
 
-// GetUserAssetActs gets user asset activities with pagination and filters
-func (c *Client) GetUserAssetActs(params UserAssetActsParams) (*UserAssetActsResponse, error) {
+// GetUserAssetActivities gets user asset activities with pagination and filters
+func (c *Client) GetUserAssetActivities(params UserAssetActsParams) (*UserAssetActsResponse, error) {
 	req, err := c.newRequest("GET", "/sp2/user_asset_acts")
 	if err != nil {
 		return nil, err
@@ -209,7 +209,7 @@ func (c *Client) GetUserAssetActs(params UserAssetActsParams) (*UserAssetActsRes
 	return &resp, nil
 }
 
-// UserAssetActsParams represents the parameters for GetUserAssetActs
+// UserAssetActsParams represents the parameters for GetUserAssetActivities
 type UserAssetActsParams struct {
 	IsOld        bool
 	IsNew        bool
@@ -218,9 +218,9 @@ type UserAssetActsParams struct {
 	Size         int
 }
 
-// GetUserAssetAct gets a specific user asset activity by ID
-func (c *Client) GetUserAssetAct(id string) (*UserAssetActResponse, error) {
-	req, err := c.newRequest("GET", fmt.Sprintf("/sp2/user_asset_acts/%s", id))
+// GetUserAssetActivity gets a specific user asset activity by ID
+func (c *Client) GetUserAssetActivity(activityID string) (*UserAssetActResponse, error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("/sp2/user_asset_acts/%s", activityID))
 	if err != nil {
 		return nil, err
 	}
@@ -272,4 +272,27 @@ func (c *Client) addQueryParams(req *http.Request, params map[string]string) {
 		q.Add(key, value)
 	}
 	req.URL.RawQuery = q.Encode()
+}
+
+// GetCashFlowTermData gets cash flow data for a specific sub-account within a date range
+func (c *Client) GetCashFlowTermData(subAccountIDHash string, from, to string) (*CashFlowTermDataResponse, error) {
+	req, err := c.newRequest("GET", "/sp/cf_term_data_by_sub_account")
+	if err != nil {
+		return nil, err
+	}
+
+	// Add query parameters
+	params := map[string]string{
+		"sub_account_id_hash": subAccountIDHash,
+		"from":                from,
+		"to":                  to,
+	}
+	c.addQueryParams(req, params)
+
+	var resp CashFlowTermDataResponse
+	if err := c.do(req, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
 }

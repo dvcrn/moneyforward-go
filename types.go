@@ -311,3 +311,11 @@ type ServicesResponse struct {
 		CategoryID  int    `json:"category_id"`
 	} `json:"services"`
 }
+
+// CashFlowTermDataResponse represents the response from the cash flow term data endpoint
+type CashFlowTermDataResponse struct {
+	Result        string `json:"result"`
+	UserAssetActs []struct {
+		UserAssetAct UserAssetAct `json:"user_asset_act"`
+	} `json:"user_asset_acts"`
+}

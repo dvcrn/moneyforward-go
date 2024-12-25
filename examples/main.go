@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// Get recent transactions
-	transactions, err := client.GetUserAssetActs(moneyforward.UserAssetActsParams{
+	transactions, err := client.GetUserAssetActivities(moneyforward.UserAssetActsParams{
 		Size:         16,
 		IsNew:        true,
 		IsContinuous: true,
@@ -86,20 +86,17 @@ func main() {
 		)
 	}
 
-	// Get specific user asset act
-	if len(transactions.UserAssetActs) > 0 {
-		act, err := client.GetUserAssetAct(transactions.UserAssetActs[0].ID.String())
-		if err != nil {
-			log.Fatal("Failed to get specific user asset act:", err)
+	acts, err := client.GetUserAssetActivities(moneyforward.UserAssetActsParams{})
+	if err != nil {
+		log.Fatal("Failed to get user asset acts:", err)
+	}
+
+	if len(acts.UserAssetActs) > 0 {
+		fmt.Println("\nLast 10 Transactions:")
+
+		for _, act := range acts.UserAssetActs {
+			fmt.Printf("  - %s: ¥%.2f (%s)\n", act.Content, act.Amount, act.RecognizedAt.Format("2006-01-02"))
 		}
-		fmt.Println("\nTransaction Details:")
-		fmt.Printf("  Content: %s\n", act.UserAssetAct.Content)
-		fmt.Printf("  Amount: ¥%.2f\n", act.UserAssetAct.Amount)
-		fmt.Printf("  Date: %s\n", act.UserAssetAct.RecognizedAt.Format("2006-01-02"))
-		fmt.Printf("  Account: %s (%s)\n",
-			act.UserAssetAct.SubAccount.SubName,
-			act.UserAssetAct.Account.Service.ServiceName,
-		)
 	}
 
 	// Get specific account
