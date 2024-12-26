@@ -296,3 +296,24 @@ func (c *Client) GetCashFlowTermData(subAccountIDHash string, from, to string) (
 
 	return &resp, nil
 }
+
+// GetSubAccountDetail gets detailed information for a specific sub-account
+func (c *Client) GetSubAccountDetail(accountIDHash, subAccountIDHash string) (*AccountDetailResponse, error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("/sp/service_detail/%s", accountIDHash))
+	if err != nil {
+		return nil, err
+	}
+
+	params := map[string]string{
+		"range":               "90",
+		"sub_account_id_hash": subAccountIDHash,
+	}
+	c.addQueryParams(req, params)
+
+	var resp AccountDetailResponse
+	if err := c.do(req, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}

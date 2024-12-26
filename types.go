@@ -11,6 +11,20 @@ type MFPath string // eg "sp2/accounts/t0qRlCziUbsxYAgcH2fGbw/edit"
 
 type MFShowPath MFPath
 
+type AccountType string
+
+const (
+	AccountTypeBank                   AccountType = "銀行"
+	AccountTypeSecurities             AccountType = "証券"
+	AccountTypeCryptoFXPreciousMetals AccountType = "暗号資産・FX・貴金属"
+	AccountTypeCard                   AccountType = "カード"
+	AccountTypeElectronicMoneyPrepaid AccountType = "電子マネー・プリペイド"
+	AccountTypePoints                 AccountType = "ポイント"
+	AccountTypeMobilePhone            AccountType = "携帯"
+	AccountTypeOnlineShopping         AccountType = "通販"
+	AccountTypeSupermarket            AccountType = "スーパー"
+)
+
 // HomeTimelineResponse represents the response from the home timeline endpoint
 type HomeTimelineResponse struct {
 	Self struct {
@@ -32,19 +46,19 @@ type HomeTimelineResponse struct {
 				} `json:"category"`
 				Parameters struct {
 					Account *struct {
-						Name                 string     `json:"name"`
-						Amount               float64    `json:"amount"`
-						Status               int        `json:"status"`
-						Type                 string     `json:"type"`
-						ShowPath             MFShowPath `json:"show_path"`
-						LastSucceededAt      string     `json:"last_succeeded_at"`
-						AggregationQueuePath MFPath     `json:"aggregation_queue_path"`
-						AccountIDHash        string     `json:"account_id_hash"`
-						ServiceID            int        `json:"service_id"`
-						ServiceType          string     `json:"service_type"`
-						ServiceCategoryID    int        `json:"service_category_id"`
-						ColorCode            string     `json:"color_code"`
-						IsShowTransaction    bool       `json:"is_show_transaction"`
+						Name                 string      `json:"name"`
+						Amount               float64     `json:"amount"`
+						Status               int         `json:"status"`
+						Type                 AccountType `json:"type"`
+						ShowPath             MFShowPath  `json:"show_path"`
+						LastSucceededAt      string      `json:"last_succeeded_at"`
+						AggregationQueuePath MFPath      `json:"aggregation_queue_path"`
+						AccountIDHash        string      `json:"account_id_hash"`
+						ServiceID            int         `json:"service_id"`
+						ServiceType          string      `json:"service_type"`
+						ServiceCategoryID    int         `json:"service_category_id"`
+						ColorCode            string      `json:"color_code"`
+						IsShowTransaction    bool        `json:"is_show_transaction"`
 					} `json:"account,omitempty"`
 					UserAssetActIDs []int64 `json:"user_asset_act_ids"`
 					LargestAmount   *struct {
@@ -79,20 +93,20 @@ type HomeTimelineResponse struct {
 // AccountSummariesResponse represents the response from the account summaries endpoint
 type AccountSummariesResponse struct {
 	Accounts []struct {
-		Name                 string     `json:"name"`
-		Amount               float64    `json:"amount"`
-		LastLoginAt          string     `json:"last_login_at"`
-		LastAggregatedAt     string     `json:"last_aggregated_at"`
-		LastSucceededAt      string     `json:"last_succeeded_at"`
-		ErrorID              int        `json:"error_id"`
-		Status               int        `json:"status"`
-		Type                 string     `json:"type"`
-		AccountIDHash        string     `json:"account_id_hash"`
-		ShowPath             MFShowPath `json:"show_path"`
-		AggregationQueuePath MFPath     `json:"aggregation_queue_path"`
-		ServiceID            int        `json:"service_id"`
-		ServiceType          string     `json:"service_type"`
-		ServiceCategoryID    int        `json:"service_category_id"`
+		Name                 string      `json:"name"`
+		Amount               float64     `json:"amount"`
+		LastLoginAt          string      `json:"last_login_at"`
+		LastAggregatedAt     string      `json:"last_aggregated_at"`
+		LastSucceededAt      string      `json:"last_succeeded_at"`
+		ErrorID              int         `json:"error_id"`
+		Status               int         `json:"status"`
+		Type                 AccountType `json:"type"`
+		AccountIDHash        string      `json:"account_id_hash"`
+		ShowPath             MFShowPath  `json:"show_path"`
+		AggregationQueuePath MFPath      `json:"aggregation_queue_path"`
+		ServiceID            int         `json:"service_id"`
+		ServiceType          string      `json:"service_type"`
+		ServiceCategoryID    int         `json:"service_category_id"`
 		SubAccounts          []struct {
 			SubAccountIDHash      string `json:"sub_account_id_hash"`
 			SubName               string `json:"sub_name"`
@@ -319,3 +333,303 @@ type CashFlowTermDataResponse struct {
 		UserAssetAct UserAssetAct `json:"user_asset_act"`
 	} `json:"user_asset_acts"`
 }
+
+// AccountDetailResponse represents the detailed account information
+type SubAccount struct {
+	ID               int    `json:"id"`
+	UserID           int    `json:"user_id"`
+	AccountID        int    `json:"account_id"`
+	SubName          string `json:"sub_name"`
+	SubType          string `json:"sub_type"`
+	SubNumber        string `json:"sub_number"`
+	DispName         string `json:"disp_name"`
+	SubAccountIDHash string `json:"sub_account_id_hash"`
+	IsDummy          bool   `json:"is_dummy"`
+	SumValue         int    `json:"sum_value"`
+	CurrentGroup     bool   `json:"current_group"`
+}
+
+type PrevSubAccount struct {
+	SubAccount SubAccount `json:"sub_account"`
+}
+
+type UserAssetDet struct {
+	Code              string            `json:"code"`
+	Name              string            `json:"name"`
+	Qty               float64           `json:"qty"`
+	EntriedPrice      float64           `json:"entried_price"`
+	CurrentPrice      float64           `json:"current_price"`
+	Value             float64           `json:"value"`
+	Profit            float64           `json:"profit"`
+	EntriedAt         time.Time         `json:"entried_at"`
+	ExpireAt          time.Time         `json:"expire_at"`
+	Cost              float64           `json:"cost"`
+	Currency          string            `json:"currency"`
+	JPYRate           float64           `json:"jpyrate"`
+	Interest          float64           `json:"interest"`
+	CreatedAt         time.Time         `json:"created_at"`
+	UpdatedAt         time.Time         `json:"updated_at"`
+	Extra             string            `json:"extra"`
+	AssetDetailIDHash string            `json:"asset_detail_id_hash"`
+	AccountName       string            `json:"account_name"`
+	SubAccountName    string            `json:"sub_account_name"`
+	IsManual          bool              `json:"is_manual"`
+	IsWallet          bool              `json:"is_wallet"`
+	IsManualEm        bool              `json:"is_manual_em"`
+	SubAccountIDHash  string            `json:"sub_account_id_hash"`
+	Account           AccountInfo       `json:"account"`
+	AssetClass        AssetClassInfo    `json:"asset_class"`
+	AssetSubclass     AssetSubclassInfo `json:"asset_subclass"`
+}
+
+type AccountInfo struct {
+	Account AccountDetails `json:"account"`
+}
+
+type AccountDetails struct {
+	ID                      int         `json:"id"`
+	UserID                  int         `json:"user_id"`
+	ServiceID               int         `json:"service_id"`
+	UserServiceID           int         `json:"user_service_id"`
+	ServiceCategoryID       int         `json:"service_category_id"`
+	ManualFlag              int         `json:"manual_flag"`
+	Status                  int         `json:"status"`
+	ErrorID                 string      `json:"error_id"`
+	DispName                string      `json:"disp_name"`
+	Memo                    string      `json:"memo"`
+	MsgFlag                 int         `json:"msg_flag"`
+	MsgTime                 time.Time   `json:"msg_time"`
+	AccountUID              string      `json:"account_uid"`
+	AccountUIDHidden        string      `json:"account_uid_hidden"`
+	CheckKey                string      `json:"check_key"`
+	LastLoginAt             time.Time   `json:"last_login_at"`
+	FirstSucceededAt        time.Time   `json:"first_succeeded_at"`
+	LastSucceededAt         string      `json:"last_succeeded_at"`
+	OriginalLastSucceededAt time.Time   `json:"original_last_succeeded_at"`
+	LastAggregatedAt        time.Time   `json:"last_aggregated_at"`
+	NextAggregateAt         time.Time   `json:"next_aggregate_at"`
+	AggreSpan               int         `json:"aggre_span"`
+	AggreStartDate          time.Time   `json:"aggre_start_date"`
+	Message                 string      `json:"message"`
+	AssistAccountID         int         `json:"assist_account_id"`
+	AssistSubAccountID      int         `json:"assist_sub_account_id"`
+	AssistTargetDetID       int         `json:"assist_target_det_id"`
+	OverrideProxyTag        string      `json:"override_proxy_tag"`
+	IsDemo                  bool        `json:"is_demo"`
+	IsSuspended             bool        `json:"is_suspended"`
+	CreatedAt               time.Time   `json:"created_at"`
+	Withdrawal              int         `json:"withdrawal"`
+	DeletedAt               time.Time   `json:"deleted_at"`
+	Service                 ServiceInfo `json:"service"`
+}
+
+type ServiceInfo struct {
+	Service ServiceDetails `json:"service"`
+}
+
+type ServiceDetails struct {
+	ID                   int    `json:"id"`
+	ServiceCategoryID    string `json:"service_category_id"`
+	ServiceSubCategoryID int    `json:"service_sub_category_id"`
+	CategoryType         string `json:"category_type"`
+	ServiceType          string `json:"service_type"`
+	CategoryName         string `json:"category_name"`
+	ServiceName          string `json:"service_name"`
+	AssistFlag           int    `json:"assist_flag"`
+	BizFlag              int    `json:"biz_flag"`
+	MfscFlag             bool   `json:"mfsc_flag"`
+	IsActive             int    `json:"is_active"`
+	LoginURL             string `json:"login_url"`
+	LoginURLSp           string `json:"login_url_sp"`
+	DispOrder            int    `json:"disp_order"`
+	Yomigana             string `json:"yomigana"`
+	Information          string `json:"information"`
+	Description          string `json:"description"`
+	SecurityWording      string `json:"security_wording"`
+	Code                 string `json:"code"`
+	ColorCode            string `json:"color_code"`
+	IsActivePfm          bool   `json:"is_active_pfm"`
+	IsActiveMfc          bool   `json:"is_active_mfc"`
+	IsTransferable       bool   `json:"is_transferable"`
+	ResourceGroup        string `json:"resource_group"`
+	ServiceID            int    `json:"service_id"`
+	IsAlias              bool   `json:"is_alias"`
+}
+
+type AssetClassInfo struct {
+	AssetClass AssetClassDetails `json:"asset_class"`
+}
+
+type AssetClassDetails struct {
+	ID             int    `json:"id"`
+	AssetClassType string `json:"asset_class_type"`
+	AssetClassName string `json:"asset_class_name"`
+	DispOrder      int    `json:"disp_order"`
+}
+
+type AssetSubclassInfo struct {
+	AssetSubclass AssetSubclassDetails `json:"asset_subclass"`
+}
+
+type AssetSubclassDetails struct {
+	ID                int    `json:"id"`
+	AssetClassID      int    `json:"asset_class_id"`
+	AssetSubclassType string `json:"asset_subclass_type"`
+	AssetSubclassName string `json:"asset_subclass_name"`
+	DispOrder         int    `json:"disp_order"`
+	Liquid            int    `json:"liquid"`
+}
+
+type AccountDetailResponse struct {
+	Result        string                   `json:"result"`
+	AccountDetail AccountDetailInformation `json:"account_detail"`
+}
+
+type AccountDetailInformation struct {
+	PrevSubAccounts    []PrevSubAccount          `json:"prev_sub_accounts"`
+	AssetTotalLia      int                       `json:"asset_total_lia"`
+	DispSumHistory     map[string][]int          `json:"disp_sum_history"`
+	FromDate           string                    `json:"from_date"`
+	ToDate             string                    `json:"to_date"`
+	UserAssetClassSums map[string]int            `json:"user_asset_class_sums"`
+	AssetTotalAsset    int                       `json:"asset_total_asset"`
+	UserAssetDets      map[string][]UserAssetDet `json:"user_asset_dets"`
+	UserAssetActs      []interface{}             `json:"user_asset_acts"`
+}
+
+// Result        string `json:"result"`
+// 	AccountDetail struct {
+// 		PrevSubAccounts []struct {
+// 			SubAccount struct {
+// 				ID               int    `json:"id"`
+// 				UserID           int    `json:"user_id"`
+// 				AccountID        int    `json:"account_id"`
+// 				SubName          string `json:"sub_name"`
+// 				SubType          string `json:"sub_type"`
+// 				SubNumber        string `json:"sub_number"`
+// 				DispName         string `json:"disp_name"`
+// 				SubAccountIDHash string `json:"sub_account_id_hash"`
+// 				IsDummy          bool   `json:"is_dummy"`
+// 				SumValue         int    `json:"sum_value"`
+// 				CurrentGroup     bool   `json:"current_group"`
+// 			} `json:"sub_account"`
+// 		} `json:"prev_sub_accounts"`
+// 		AssetTotalLia      int              `json:"asset_total_lia"`
+// 		DispSumHistory     map[string][]int `json:"disp_sum_history"`
+// 		FromDate           string           `json:"from_date"`
+// 		ToDate             string           `json:"to_date"`
+// 		UserAssetClassSums map[string]int   `json:"user_asset_class_sums"`
+// 		AssetTotalAsset    int              `json:"asset_total_asset"`
+// 		UserAssetDets      map[string][]struct {
+// 			Code              *string   `json:"code"`
+// 			Name              string    `json:"name"`
+// 			Qty               float64   `json:"qty"`
+// 			EntriedPrice      float64   `json:"entried_price"`
+// 			CurrentPrice      float64   `json:"current_price"`
+// 			Value             float64   `json:"value"`
+// 			Profit            float64   `json:"profit"`
+// 			EntriedAt         time.Time `json:"entried_at"`
+// 			ExpireAt          time.Time `json:"expire_at"`
+// 			Cost              float64   `json:"cost"`
+// 			Currency          string    `json:"currency"`
+// 			JPYRate           float64   `json:"jpyrate"`
+// 			Interest          float64   `json:"interest"`
+// 			CreatedAt         time.Time `json:"created_at"`
+// 			UpdatedAt         time.Time `json:"updated_at"`
+// 			Extra             string    `json:"extra"`
+// 			AssetDetailIDHash string    `json:"asset_detail_id_hash"`
+// 			AccountName       string    `json:"account_name"`
+// 			SubAccountName    string    `json:"sub_account_name"`
+// 			IsManual          bool      `json:"is_manual"`
+// 			IsWallet          bool      `json:"is_wallet"`
+// 			IsManualEm        bool      `json:"is_manual_em"`
+// 			SubAccountIDHash  string    `json:"sub_account_id_hash"`
+// 			Account           struct {
+// 				Account struct {
+// 					ID                      int       `json:"id"`
+// 					UserID                  int       `json:"user_id"`
+// 					ServiceID               int       `json:"service_id"`
+// 					UserServiceID           int       `json:"user_service_id"`
+// 					ServiceCategoryID       int       `json:"service_category_id"`
+// 					ManualFlag              int       `json:"manual_flag"`
+// 					Status                  int       `json:"status"`
+// 					ErrorID                 string    `json:"error_id"`
+// 					DispName                string    `json:"disp_name"`
+// 					Memo                    string    `json:"memo"`
+// 					MsgFlag                 int       `json:"msg_flag"`
+// 					MsgTime                 time.Time `json:"msg_time"`
+// 					AccountUID              string    `json:"account_uid"`
+// 					AccountUIDHidden        string    `json:"account_uid_hidden"`
+// 					CheckKey                string    `json:"check_key"`
+// 					LastLoginAt             time.Time `json:"last_login_at"`
+// 					FirstSucceededAt        time.Time `json:"first_succeeded_at"`
+// 					LastSucceededAt         string    `json:"last_succeeded_at"`
+// 					OriginalLastSucceededAt time.Time `json:"original_last_succeeded_at"`
+// 					LastAggregatedAt        time.Time `json:"last_aggregated_at"`
+// 					NextAggregateAt         time.Time `json:"next_aggregate_at"`
+// 					AggreSpan               int       `json:"aggre_span"`
+// 					AggreStartDate          time.Time `json:"aggre_start_date"`
+// 					Message                 string    `json:"message"`
+// 					AssistAccountID         int       `json:"assist_account_id"`
+// 					AssistSubAccountID      int       `json:"assist_sub_account_id"`
+// 					AssistTargetDetID       int       `json:"assist_target_det_id"`
+// 					OverrideProxyTag        string    `json:"override_proxy_tag"`
+// 					IsDemo                  bool      `json:"is_demo"`
+// 					IsSuspended             bool      `json:"is_suspended"`
+// 					CreatedAt               time.Time `json:"created_at"`
+// 					Withdrawal              int       `json:"withdrawal"`
+// 					DeletedAt               time.Time `json:"deleted_at"`
+// 					Service                 struct {
+// 						Service struct {
+// 							ID                   int    `json:"id"`
+// 							ServiceCategoryID    string `json:"service_category_id"`
+// 							ServiceSubCategoryID int    `json:"service_sub_category_id"`
+// 							CategoryType         string `json:"category_type"`
+// 							ServiceType          string `json:"service_type"`
+// 							CategoryName         string `json:"category_name"`
+// 							ServiceName          string `json:"service_name"`
+// 							AssistFlag           int    `json:"assist_flag"`
+// 							BizFlag              int    `json:"biz_flag"`
+// 							MfscFlag             bool   `json:"mfsc_flag"`
+// 							IsActive             int    `json:"is_active"`
+// 							LoginURL             string `json:"login_url"`
+// 							LoginURLSp           string `json:"login_url_sp"`
+// 							DispOrder            int    `json:"disp_order"`
+// 							Yomigana             string `json:"yomigana"`
+// 							Information          string `json:"information"`
+// 							Description          string `json:"description"`
+// 							SecurityWording      string `json:"security_wording"`
+// 							Code                 string `json:"code"`
+// 							ColorCode            string `json:"color_code"`
+// 							IsActivePfm          bool   `json:"is_active_pfm"`
+// 							IsActiveMfc          bool   `json:"is_active_mfc"`
+// 							IsTransferable       bool   `json:"is_transferable"`
+// 							ResourceGroup        string `json:"resource_group"`
+// 							ServiceID            int    `json:"service_id"`
+// 							IsAlias              bool   `json:"is_alias"`
+// 						} `json:"service"`
+// 					} `json:"service"`
+// 				} `json:"account"`
+// 			} `json:"account"`
+// 			AssetClass struct {
+// 				AssetClass struct {
+// 					ID             int    `json:"id"`
+// 					AssetClassType string `json:"asset_class_type"`
+// 					AssetClassName string `json:"asset_class_name"`
+// 					DispOrder      int    `json:"disp_order"`
+// 				} `json:"asset_class"`
+// 			} `json:"asset_class"`
+// 			AssetSubclass struct {
+// 				AssetSubclass struct {
+// 					ID                int    `json:"id"`
+// 					AssetClassID      int    `json:"asset_class_id"`
+// 					AssetSubclassType string `json:"asset_subclass_type"`
+// 					AssetSubclassName string `json:"asset_subclass_name"`
+// 					DispOrder         int    `json:"disp_order"`
+// 					Liquid            int    `json:"liquid"`
+// 				} `json:"asset_subclass"`
+// 			} `json:"asset_subclass"`
+// 		} `json:"user_asset_dets"`
+// 		UserAssetActs []interface{} `json:"user_asset_acts"`
+// 	} `json:"account_detail"`
+// }
