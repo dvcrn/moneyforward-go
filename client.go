@@ -274,8 +274,31 @@ func (c *Client) addQueryParams(req *http.Request, params map[string]string) {
 	req.URL.RawQuery = q.Encode()
 }
 
-// GetCashFlowTermData gets cash flow data for a specific sub-account within a date range
-func (c *Client) GetCashFlowTermData(subAccountIDHash string, from, to string) (*CashFlowTermDataResponse, error) {
+// GetAccountCashFlowTermData gets cash flow data for a specific sub-account within a date range
+func (c *Client) GetAccountCashFlowTermData(accountIDHash string, from, to string) (*CashFlowTermDataResponse, error) {
+	req, err := c.newRequest("GET", "/sp/cf_term_data_by_account")
+	if err != nil {
+		return nil, err
+	}
+
+	// Add query parameters
+	params := map[string]string{
+		"account_id_hash": accountIDHash,
+		"from":            from,
+		"to":              to,
+	}
+	c.addQueryParams(req, params)
+
+	var resp CashFlowTermDataResponse
+	if err := c.do(req, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}
+
+// GetSubAccountCashFlowTermData gets cash flow data for a specific sub-account within a date range
+func (c *Client) GetSubAccountCashFlowTermData(subAccountIDHash string, from, to string) (*CashFlowTermDataResponse, error) {
 	req, err := c.newRequest("GET", "/sp/cf_term_data_by_sub_account")
 	if err != nil {
 		return nil, err
@@ -298,6 +321,26 @@ func (c *Client) GetCashFlowTermData(subAccountIDHash string, from, to string) (
 }
 
 // GetSubAccountDetail gets detailed information for a specific sub-account
+func (c *Client) GetAccountDetail(accountIDHash string) (*AccountDetailResponse, error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("/sp/service_detail/%s", accountIDHash))
+	if err != nil {
+		return nil, err
+	}
+
+	params := map[string]string{
+		"range": "0",
+	}
+	c.addQueryParams(req, params)
+
+	var resp AccountDetailResponse
+	if err := c.do(req, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}
+
+// GetSubAccountDetail gets detailed information for a specific sub-account
 func (c *Client) GetSubAccountDetail(accountIDHash, subAccountIDHash string) (*AccountDetailResponse, error) {
 	req, err := c.newRequest("GET", fmt.Sprintf("/sp/service_detail/%s", accountIDHash))
 	if err != nil {
@@ -305,7 +348,7 @@ func (c *Client) GetSubAccountDetail(accountIDHash, subAccountIDHash string) (*A
 	}
 
 	params := map[string]string{
-		"range":               "90",
+		"range":               "0",
 		"sub_account_id_hash": subAccountIDHash,
 	}
 	c.addQueryParams(req, params)
