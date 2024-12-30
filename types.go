@@ -350,7 +350,7 @@ type SubAccount struct {
 }
 
 type PrevSubAccount struct {
-	SubAccount SubAccount `json:"sub_account"`
+	SubAccount *SubAccount `json:"sub_account"`
 }
 
 type UserAssetDet struct {
@@ -481,20 +481,20 @@ type AssetSubclassDetails struct {
 }
 
 type AccountDetailResponse struct {
-	Result        string                   `json:"result"`
-	AccountDetail AccountDetailInformation `json:"account_detail"`
+	Result        string                    `json:"result"`
+	AccountDetail *AccountDetailInformation `json:"account_detail"`
 }
 
 type AccountDetailInformation struct {
-	PrevSubAccounts    []PrevSubAccount          `json:"prev_sub_accounts"`
-	AssetTotalLia      int                       `json:"asset_total_lia"`
-	DispSumHistory     map[string][]int          `json:"disp_sum_history"`
-	FromDate           string                    `json:"from_date"`
-	ToDate             string                    `json:"to_date"`
-	UserAssetClassSums map[string]int            `json:"user_asset_class_sums"`
-	AssetTotalAsset    int                       `json:"asset_total_asset"`
-	UserAssetDets      map[string][]UserAssetDet `json:"user_asset_dets"`
-	UserAssetActs      []interface{}             `json:"user_asset_acts"`
+	PrevSubAccounts    []*PrevSubAccount          `json:"prev_sub_accounts"`
+	AssetTotalLia      int                        `json:"asset_total_lia"`
+	DispSumHistory     map[string][]int           `json:"disp_sum_history"`
+	FromDate           string                     `json:"from_date"`
+	ToDate             string                     `json:"to_date"`
+	UserAssetClassSums map[string]int             `json:"user_asset_class_sums"`
+	AssetTotalAsset    int                        `json:"asset_total_asset"`
+	UserAssetDets      map[string][]*UserAssetDet `json:"user_asset_dets"`
+	UserAssetActs      []interface{}              `json:"user_asset_acts"`
 }
 
 // Result        string `json:"result"`
