@@ -360,3 +360,14 @@ func (c *Client) GetSubAccountDetail(accountIDHash, subAccountIDHash string) (*A
 
 	return &resp, nil
 }
+
+// TriggerAccountAggregation triggers a data aggregation for a specific account
+func (c *Client) TriggerAccountAggregation(accountIDHash string) error {
+	path := fmt.Sprintf("/sp2/accounts/%s/aggregation_queue", accountIDHash)
+	req, err := c.newRequest("POST", path)
+	if err != nil {
+		return err
+	}
+
+	return c.do(req, nil)
+}
