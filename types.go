@@ -485,16 +485,35 @@ type AccountDetailResponse struct {
 	AccountDetail *AccountDetailInformation `json:"account_detail"`
 }
 
+type AssetType string
+
+const (
+	AssetTypeBD   AssetType = "BD"   // Bond
+	AssetTypeDEPO AssetType = "DEPO" // Money stored, bank
+	AssetTypeDRV  AssetType = "DRV"  // Derivative
+	AssetTypeEQ   AssetType = "EQ"   // Equity
+	AssetTypeFX   AssetType = "FX"   // Foreign Exchange
+	AssetTypeINS  AssetType = "INS"  // Insurance
+	AssetTypeLIA  AssetType = "LIA"  // Liabilities
+	AssetTypeMF   AssetType = "MF"   // Mutual Fund
+	AssetTypeMGN  AssetType = "MGN"  // Margin
+	AssetTypeOTH  AssetType = "OTH"  // Other
+	AssetTypePNS  AssetType = "PNS"  // Pension
+	AssetTypePO   AssetType = "PO"   // Points
+	AssetTypeRE   AssetType = "RE"   // Real Estate
+	AssetTypeSO   AssetType = "SO"   // Stock Option
+)
+
 type AccountDetailInformation struct {
-	PrevSubAccounts    []*PrevSubAccount          `json:"prev_sub_accounts"`
-	AssetTotalLia      int                        `json:"asset_total_lia"`
-	DispSumHistory     map[string][]int           `json:"disp_sum_history"`
-	FromDate           string                     `json:"from_date"`
-	ToDate             string                     `json:"to_date"`
-	UserAssetClassSums map[string]int             `json:"user_asset_class_sums"`
-	AssetTotalAsset    int                        `json:"asset_total_asset"`
-	UserAssetDets      map[string][]*UserAssetDet `json:"user_asset_dets"`
-	UserAssetActs      []interface{}              `json:"user_asset_acts"`
+	PrevSubAccounts    []*PrevSubAccount             `json:"prev_sub_accounts"`
+	AssetTotalLia      int                           `json:"asset_total_lia"`
+	DispSumHistory     map[string][]int              `json:"disp_sum_history"`
+	FromDate           string                        `json:"from_date"`
+	ToDate             string                        `json:"to_date"`
+	UserAssetClassSums map[string]int                `json:"user_asset_class_sums"`
+	AssetTotalAsset    int                           `json:"asset_total_asset"`
+	UserAssetDets      map[AssetType][]*UserAssetDet `json:"user_asset_dets"`
+	UserAssetActs      any                           `json:"user_asset_acts"`
 }
 
 // Result        string `json:"result"`
